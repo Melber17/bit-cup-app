@@ -1,7 +1,7 @@
-import { BLACK_COLOR, PRIMARY_COLOR, RED_COLOR, WHITE_COLOR } from "./colors";
+import { BLACK_COLOR, RED_COLOR, WHITE_COLOR } from "./colors";
 
 export const darkThemeStyles = {
-	backgroundColor: PRIMARY_COLOR,
+	backgroundColor: BLACK_COLOR,
 	color: RED_COLOR,
 };
 

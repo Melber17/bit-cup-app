@@ -1,6 +1,9 @@
 export const WHITE_COLOR = "#FFFFFF";
-export const BLACK_COLOR = "#000000";
-export const RED_COLOR = "#D13A37";
+export const BLACK_COLOR = "#1E1E1E";
+export const RED_COLOR = "#BB1020";
 export const PRIMARY_COLOR = "rgb(46,46,46)";
 export const SAFE_AREA_PRIMARY_COLOR = "rgb(49,49,49)";
+export const DARK_GRAY_COLOR = "#393939";
+export const LIGHT_GRAY_COLOR = "#F3F5F9";
 export const BLACK_90_COLOR = "#03061D";
+export const GRAY_COLOR_80 = "#868686";

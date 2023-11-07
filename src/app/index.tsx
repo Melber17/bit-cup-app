@@ -1,20 +1,19 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider } from "styled-components/native";
 
-import { WithSafeArea } from "../shared/ui";
 import { WithNavigation, WithRedux } from "./providers";
 import { darkThemeStyles, lightThemeStyles } from "../shared/config/themes";
+import { Routing } from "../screens";
 
 export const App: React.FC = () => {
 	const deviceTheme = useColorScheme();
 
 	const appTheme = deviceTheme === "dark" ? darkThemeStyles : lightThemeStyles;
 
-	console.log(deviceTheme);
 	useEffect(() => {
 		SplashScreen.hide();
 	}, []);
@@ -25,9 +24,7 @@ export const App: React.FC = () => {
 				<ThemeProvider theme={appTheme}>
 					<SafeAreaProvider>
 						<WithNavigation>
-							<WithSafeArea>
-								<View></View>
-							</WithSafeArea>
+							<Routing />
 						</WithNavigation>
 					</SafeAreaProvider>
 				</ThemeProvider>

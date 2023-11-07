@@ -1,3 +1,3 @@
 export enum RootScreens {
-	HOME = "HomeScreen",
+	TAB_NAVIGATION = "TabNavigation",
 }
