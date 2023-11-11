@@ -5,6 +5,7 @@ export interface IPhotoCategory {
 
 export interface IPhoto {
 	id: number;
+	photographer: string;
 	width: number;
 	height: number;
 	url: string;
@@ -13,5 +14,6 @@ export interface IPhoto {
 		original: string;
 		large: string;
 		medium: string;
+		large2x: string;
 	};
 }

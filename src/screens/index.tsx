@@ -5,9 +5,12 @@ import styled from "styled-components/native";
 
 import { RootScreens } from "./config";
 import { TabNavigation } from "../widgets/tab-navigation";
+import { DetailsScreen } from "./details";
+import { IPhoto } from "../entities/photo";
 
 export type RootStackListType = {
 	TabNavigation: undefined;
+	Details: { data: IPhoto };
 };
 
 const Stack = createNativeStackNavigator<RootStackListType>();
@@ -28,6 +31,10 @@ export const Routing: React.FC = () => {
 				<Stack.Screen
 					name={RootScreens.TAB_NAVIGATION}
 					component={TabNavigation}
+				/>
+				<Stack.Screen
+					name={RootScreens.DETAILS}
+					component={DetailsScreen}
 				/>
 			</Stack.Navigator>
 		</Container>

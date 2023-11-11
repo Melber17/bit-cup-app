@@ -48,7 +48,7 @@ export const CategoriesList: React.FC<ICategoriesListProps> = (props) => {
 
 const Container = styled.ScrollView`
 	margin-top: ${Spacer.LARGE}px;
-	padding: 0 ${Spacer.MEDIUM}px;
+	padding: 0 ${Spacer.LARGE}px;
 	margin-bottom: ${Spacer.MEDIUM}px;
 	min-height: 40px;
 `;

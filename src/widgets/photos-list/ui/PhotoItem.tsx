@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components/native";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useNavigation } from "@react-navigation/native";
 
 import { IPhoto } from "../../../entities/photo";
 import { Spacer } from "../../../shared/config";
+import { NavigationType } from "../../tab-navigation";
+import { RootScreens } from "../../../screens/config";
 
 interface IPhotoItemProps {
 	data: IPhoto;
@@ -11,10 +14,16 @@ interface IPhotoItemProps {
 }
 
 export const PhotoItem: React.FC<IPhotoItemProps> = ({ data, width }) => {
+	const navigation = useNavigation<NavigationType>();
+	const handlePress = () => {
+		navigation.navigate(RootScreens.DETAILS, { data });
+	};
+
 	return (
 		<Button
 			width={width}
 			height={data.height}
+			onPress={handlePress}
 		>
 			<Container
 				entering={FadeIn}
@@ -44,7 +53,6 @@ const Button = styled.TouchableOpacity<{ width: number; height: number }>`
 	width: ${({ width }) => width}px;
 	height: ${({ height }) => height}px;
 	max-height: 280px;
-	margin-left: ${Spacer.MEDIUM}px;
 	margin-bottom: ${Spacer.MEDIUM}px;
 	border-radius: 20px;
 `;

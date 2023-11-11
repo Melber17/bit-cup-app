@@ -13,6 +13,7 @@ import BookmarkIcon from "../../shared/assets/icons/bookmarkIcon.svg";
 import FocusedBookMarkIcon from "../../shared/assets/icons/focusedBookmarkIcon.svg";
 import { HomeStack } from "../../screens/home";
 import { BookmarksStack } from "../../screens/bookmarks";
+import { getThemeIcon } from "../../shared/lib";
 
 export type TabStackType = {
 	HomeScreen: undefined;
@@ -25,27 +26,6 @@ export const TabNavigation = () => {
 	const phoneTheme = useColorScheme();
 	const insets = useSafeAreaInsets();
 
-	const getCurrentIcon = (
-		focused: boolean,
-		icon: JSX.Element,
-		focusedIcon: JSX.Element,
-		focusedDarkIcon: JSX.Element,
-	) => {
-		if (phoneTheme === Themes.DARK) {
-			if (focused) {
-				return focusedDarkIcon;
-			}
-
-			return icon;
-		}
-
-		if (focused) {
-			return focusedIcon;
-		}
-
-		return icon;
-	};
-
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
@@ -54,7 +34,8 @@ export const TabNavigation = () => {
 						case TabNavigationScreens.HOME:
 							return (
 								<>
-									{getCurrentIcon(
+									{getThemeIcon(
+										phoneTheme,
 										focused,
 										<HomeIcon />,
 										<FocusedHomeIcon />,
@@ -65,7 +46,8 @@ export const TabNavigation = () => {
 						case TabNavigationScreens.BOOKMARKS:
 							return (
 								<>
-									{getCurrentIcon(
+									{getThemeIcon(
+										phoneTheme,
 										focused,
 										<BookmarkIcon />,
 										<FocusedBookMarkIcon />,

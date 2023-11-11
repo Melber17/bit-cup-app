@@ -8,6 +8,7 @@ import {
 	useWindowDimensions,
 } from "react-native";
 import * as Progress from "react-native-progress";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { WithSafeArea } from "../../../shared/ui/WithSafeArea";
 import {
@@ -26,8 +27,14 @@ import {
 import { RED_COLOR, Spacer, Themes } from "../../../shared/config";
 import { CategoriesList } from "../../../widgets/categories-list";
 import { PhotosList, EmptyPhotosList } from "../../../widgets/photos-list";
+import { HomeScreens } from "../config";
+import { HomeStackType } from "./HomeStack";
 
-export const HomeScreen: React.FC = () => {
+interface IHomeScreenProps {
+	navigation: StackNavigationProp<HomeStackType, HomeScreens.HOME>;
+}
+
+export const HomeScreen: React.FC<IHomeScreenProps> = ({ navigation }) => {
 	const isDarkTheme = useColorScheme() === Themes.DARK;
 	const [sectionsData, setSectionsData] =
 		useState<Nullable<IPhotoCategory[]>>(null);
@@ -236,7 +243,7 @@ export const HomeScreen: React.FC = () => {
 const Wrapper = styled.View``;
 
 const Content = styled.View`
-	margin: 0 ${Spacer.MEDIUM}px;
+	margin: 0 ${Spacer.LARGE}px;
 `;
 
 const Header = styled.View`
