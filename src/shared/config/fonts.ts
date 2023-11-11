@@ -1,5 +1,5 @@
 export enum Fonts {
-	INTER = "Inter",
+	MULISH = "Mulish",
 }
 
 export enum FontStyles {

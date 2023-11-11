@@ -59,6 +59,6 @@ export const Text: FC<IProps> = (props) => {
 const Wrapper = styled.Text<TextProps>`
 	font-size: ${({ size = 16 }) => size}px;
 	color: ${({ theme }) => theme.color};
-	font-family: ${({ font = Fonts.INTER, fontStyle = FontStyles.REGULAR }) =>
+	font-family: ${({ font = Fonts.MULISH, fontStyle = FontStyles.REGULAR }) =>
 		`${font}-${fontStyle}`};
 `;

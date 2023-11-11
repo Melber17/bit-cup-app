@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components/native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { useWindowDimensions } from "react-native";
+import { useColorScheme, useWindowDimensions } from "react-native";
 
-import { RED_COLOR, Spacer } from "../../../config";
+import { FontStyles, RED_COLOR, Spacer, Themes } from "../../../config";
 import { Text } from "../../Text";
 import NoNetworkIcon from "../../../assets/icons/NoNetworkIcon.svg";
+import NoNetworkIconLight from "../../../assets/icons/NoNetworkLight.svg";
 
 interface INetworkErrorContentProps {
 	onPress: () => void;
@@ -14,6 +15,7 @@ interface INetworkErrorContentProps {
 const NetworkErrorContent: React.FC<INetworkErrorContentProps> = ({
 	onPress,
 }) => {
+	const deviceTheme = useColorScheme();
 	const { height } = useWindowDimensions();
 
 	return (
@@ -22,9 +24,13 @@ const NetworkErrorContent: React.FC<INetworkErrorContentProps> = ({
 			entering={FadeInDown}
 		>
 			<Container>
-				<NoNetworkIcon />
+				{deviceTheme === Themes.DARK ? (
+					<NoNetworkIconLight />
+				) : (
+					<NoNetworkIcon />
+				)}
 				<Button onPress={onPress}>
-					<Title>Try Again</Title>
+					<Title fontStyle={FontStyles.BOLD}>Try Again</Title>
 				</Button>
 				<Button></Button>
 			</Container>
