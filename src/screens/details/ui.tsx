@@ -13,6 +13,7 @@ import DarkFocusedBookmarkIcon from "../../shared/assets/icons/darkFocusedBookma
 import BookmarkIcon from "../../shared/assets/icons/BookmarkIconBlack.svg";
 import WhiteBookmarkIcon from "../../shared/assets/icons/WhiteBookmarkIcon.svg";
 import FocusedBookMarkIcon from "../../shared/assets/icons/focusedBookmarkIcon.svg";
+import { checkDownloadFilePermission } from "../../shared/lib";
 
 interface IDetailsScreenProps {
 	route: RouteProp<RootStackListType, RootScreens.DETAILS>;
@@ -40,6 +41,10 @@ export const DetailsScreen: React.FC<IDetailsScreenProps> = ({ route }) => {
 		return <BookmarkIcon />;
 	};
 
+	const handlePressDownload = () => {
+		checkDownloadFilePermission(data.src.original);
+	};
+
 	return (
 		<WithSafeArea>
 			<Container>
@@ -59,7 +64,7 @@ export const DetailsScreen: React.FC<IDetailsScreenProps> = ({ route }) => {
 					</Content>
 				</Wrapper>
 				<BottomBar>
-					<DownloadWrapper>
+					<DownloadWrapper onPress={handlePressDownload}>
 						<DownloadIcon />
 						<DownloadText>Download</DownloadText>
 					</DownloadWrapper>
@@ -90,7 +95,7 @@ const BottomBar = styled.View`
 	justify-content: space-between;
 `;
 
-const DownloadWrapper = styled.View`
+const DownloadWrapper = styled.TouchableOpacity`
 	border-radius: ${Spacer.LARGE}px;
 	flex-direction: row;
 	width: 180px;

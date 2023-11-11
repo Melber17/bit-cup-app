@@ -66,6 +66,8 @@ export const TabNavigation = () => {
 						phoneTheme === Themes.DARK ? BLACK_COLOR : WHITE_COLOR,
 					height: insets.bottom + 64,
 				},
+				// navigationBarColor:
+				// 	phoneTheme === Themes.DARK ? BLACK_COLOR : WHITE_COLOR,
 				tabBarLabelPosition: "below-icon",
 				headerShown: false,
 			})}
