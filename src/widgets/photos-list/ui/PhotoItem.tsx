@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 import { IPhoto } from "../../../entities/photo";
 import { Spacer } from "../../../shared/config";
@@ -16,6 +17,7 @@ export const PhotoItem: React.FC<IPhotoItemProps> = ({ data, width }) => {
 			height={data.height}
 		>
 			<Container
+				entering={FadeIn}
 				source={{ uri: data.src.large }}
 				width={width}
 				height={data.height}
@@ -26,7 +28,7 @@ export const PhotoItem: React.FC<IPhotoItemProps> = ({ data, width }) => {
 	);
 };
 
-const Container = styled.Image<{
+const Container = styled(Animated.Image)<{
 	background: string;
 	width: number;
 	height: number;

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import { TouchableOpacity, useColorScheme } from "react-native";
+import { TextInput, useColorScheme } from "react-native";
 
 import {
 	BLACK_COLOR,
@@ -15,17 +15,18 @@ import CrossIcon from "../../assets/icons/crossIcon.svg";
 import CrossIconLight from "../../assets/icons/crossIconLight.svg";
 
 interface ISearchBarProps {
-	defaultValue?: string;
 	value: string;
 	onChangeText: (value: string) => void;
 	onSubmit: () => void;
+	inputRef: React.RefObject<TextInput>;
 }
 
 export const SearchBar: React.FC<ISearchBarProps> = (props) => {
+	const { onChangeText, inputRef, value, onSubmit } = props;
 	const isDarkTheme = useColorScheme() === Themes.DARK;
-	const { onChangeText, value, onSubmit, defaultValue } = props;
 
 	const onPressCross = () => {
+		inputRef.current?.clear();
 		onChangeText("");
 	};
 
@@ -49,17 +50,15 @@ export const SearchBar: React.FC<ISearchBarProps> = (props) => {
 
 	return (
 		<Wrapper>
-			<TouchableOpacity onPress={onSubmit}>
-				<SearchIcon />
-			</TouchableOpacity>
-
+			<SearchIcon />
 			<Input
 				placeholder="Search"
+				ref={inputRef}
 				maxLength={50}
 				placeholderTextColor={
 					isDarkTheme ? SEARCH_BAR_DARK_TEXT : SEARCH_BAR_LIGHT_TEXT
 				}
-				defaultValue={defaultValue}
+				defaultValue={value}
 				onChangeText={onChangeText}
 				onSubmitEditing={onSubmit}
 				style={{

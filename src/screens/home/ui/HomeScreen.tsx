@@ -1,5 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
+import { debounce } from "lodash";
+import {
+	TextInput,
+	ToastAndroid,
+	useColorScheme,
+	useWindowDimensions,
+} from "react-native";
+import * as Progress from "react-native-progress";
 
 import { WithSafeArea } from "../../../shared/ui/WithSafeArea";
 import {
@@ -13,18 +21,25 @@ import {
 	IPhotoCategory,
 	getCuratedPhotos,
 	getPopularPhotosCategories,
+	searchPhotos,
 } from "../../../entities/photo";
-import { Spacer } from "../../../shared/config";
+import { RED_COLOR, Spacer, Themes } from "../../../shared/config";
 import { CategoriesList } from "../../../widgets/categories-list";
-import { PhotosList } from "../../../widgets/photos-list/ui/PhotosList";
+import { PhotosList, EmptyPhotosList } from "../../../widgets/photos-list";
 
 export const HomeScreen: React.FC = () => {
+	const isDarkTheme = useColorScheme() === Themes.DARK;
 	const [sectionsData, setSectionsData] =
 		useState<Nullable<IPhotoCategory[]>>(null);
+	const { width } = useWindowDimensions();
 	const [searchValue, setSearchValue] = useState("");
 	const [activeCategory, setActiveCategory] =
 		useState<Nullable<IPhotoCategory>>(null);
 	const [photosData, setPhotosData] = useState<Nullable<IPhoto[]>>(null);
+	const [isErrorLoadPhotos, setIsErrorLoadPhotos] = useState(false);
+	const [isEmptyPhotos, setIsEmptyPhotos] = useState(false);
+	const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
+	const inputRef = useRef<TextInput>(null);
 
 	const handleLoadSections = async () => {
 		const data = await getPopularPhotosCategories();
@@ -32,56 +47,183 @@ export const HomeScreen: React.FC = () => {
 		setSectionsData(data.collections);
 	};
 
-	const handleLoadData = async () => {
-		const data = await getCuratedPhotos(1);
+	const handleSearchQueryChange = debounce((text: string) => {
+		setSearchValue(text);
+		const searchLowerCase = text.toLocaleLowerCase();
 
-		console.log("data", data.photos);
-		setPhotosData(data.photos);
+		if (activeCategory?.title.toLocaleLowerCase() !== searchLowerCase) {
+			const activeCategoryFromSearch = sectionsData?.find(
+				(item) => item.title.toLocaleLowerCase() === searchLowerCase,
+			);
+
+			if (activeCategoryFromSearch) {
+				setActiveCategory(activeCategoryFromSearch);
+
+				return;
+			}
+
+			setActiveCategory(null);
+		}
+	}, 500);
+
+	const handlePressExplore = () => {
+		inputRef.current?.clear();
+		setSearchValue("");
 	};
 
-	const handlePressSubmit = () => {};
+	const handleLoadData = async () => {
+		try {
+			const data = await getCuratedPhotos(1);
 
-	const { isLoading, isEmptyData, handleReset, isError } = useLoadData({
+			setPhotosData(data.photos);
+
+			if (isErrorLoadPhotos) {
+				setIsErrorLoadPhotos(false);
+			}
+
+			if (!data.photos.length) {
+				setIsEmptyPhotos(true);
+			} else {
+				setIsEmptyPhotos(false);
+			}
+		} catch (err) {
+			setIsErrorLoadPhotos(true);
+			ToastAndroid.showWithGravity(
+				"An error occurred while loading",
+				ToastAndroid.SHORT,
+				ToastAndroid.BOTTOM,
+			);
+		} finally {
+			setIsLoadingPhotos(false);
+		}
+	};
+
+	const handlePressSubmit = () => {
+		if (searchValue) {
+			handleFilterData();
+
+			return;
+		}
+
+		handleLoadData();
+	};
+
+	const handleFilterData = async () => {
+		setIsLoadingPhotos(true);
+		try {
+			const data = await searchPhotos(1, searchValue);
+
+			setPhotosData(data.photos);
+
+			if (!data.photos.length) {
+				setIsEmptyPhotos(true);
+			} else {
+				setIsEmptyPhotos(false);
+			}
+
+			if (isErrorLoadPhotos) {
+				setIsErrorLoadPhotos(false);
+			}
+		} catch (err) {
+			setIsErrorLoadPhotos(true);
+
+			ToastAndroid.showWithGravity(
+				"An error occurred while loading",
+				ToastAndroid.SHORT,
+				ToastAndroid.BOTTOM,
+			);
+		} finally {
+			setIsLoadingPhotos(false);
+		}
+	};
+
+	const { isLoading, handleReset, isError } = useLoadData({
 		loadData: handleLoadSections,
 		withHandleError: true,
 		withEmptyData: true,
 	});
 
-	useEffect(() => {
-		handleLoadData();
-	}, []);
+	const handlePressReset = () => {
+		if (isError) {
+			handleReset();
+		}
 
-	const headerComponent = () => {
-		return (
-			<Header>
-				<Content>
-					<SearchBar
-						value={searchValue}
-						onSubmit={() => console.log("sdfsf")}
-						onChangeText={setSearchValue}
-					/>
-				</Content>
-				{sectionsData && (
-					<CategoriesList
-						activeCategory={activeCategory}
-						onChangeCategory={setActiveCategory}
-						data={sectionsData}
-					/>
-				)}
-			</Header>
-		);
+		if (isErrorLoadPhotos) {
+			if (searchValue) {
+				handleFilterData();
+
+				return;
+			}
+
+			handleLoadData();
+		}
+	};
+
+	useEffect(() => {
+		if (!searchValue) {
+			handleLoadData();
+		}
+	}, [searchValue]);
+
+	useEffect(() => {
+		if (searchValue) {
+			handleFilterData();
+		}
+	}, [searchValue]);
+
+	useEffect(() => {
+		if (activeCategory) {
+			setSearchValue(activeCategory.title);
+		}
+	}, [activeCategory]);
+
+	const emptyListComponent = () => {
+		if (isEmptyPhotos) {
+			return <EmptyPhotosList onPress={handlePressExplore} />;
+		}
+
+		return <></>;
 	};
 
 	return (
 		<WithSafeArea>
 			<Container>
 				<Wrapper>
+					<Header>
+						<Content>
+							<SearchBar
+								value={searchValue}
+								inputRef={inputRef}
+								onSubmit={handlePressSubmit}
+								onChangeText={handleSearchQueryChange}
+							/>
+						</Content>
+						{(isLoading || isLoadingPhotos) && (
+							<ProgressBarWrapper>
+								<Progress.Bar
+									indeterminate
+									indeterminateAnimationDuration={1200}
+									color={RED_COLOR}
+									width={width - Spacer.MEDIUM}
+									borderWidth={0}
+									unfilledColor={isDarkTheme ? "#B5B5B5" : "#F3F5F9"}
+								/>
+							</ProgressBarWrapper>
+						)}
+						{sectionsData && (
+							<CategoriesList
+								activeCategory={activeCategory}
+								onChangeCategory={setActiveCategory}
+								data={sectionsData}
+							/>
+						)}
+					</Header>
 					<NetworkErrorResponder
-						onPress={handleReset}
-						isError={isError}
+						onPress={handlePressReset}
+						isError={isError || isErrorLoadPhotos}
 					>
 						<PhotosList
-							headerComponent={headerComponent}
+							emptyListComponent={emptyListComponent}
 							data={photosData}
 						/>
 					</NetworkErrorResponder>
@@ -98,6 +240,10 @@ const Content = styled.View`
 `;
 
 const Header = styled.View`
-	padding: 0;
+	padding-top: ${Spacer.SECONDARY}px;
 	background: ${(props) => props.theme.backgroundColor};
+`;
+
+const ProgressBarWrapper = styled.View`
+	margin: ${Spacer.SECONDARY}px ${Spacer.SMALL}px 0;
 `;

@@ -3,9 +3,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { HomeScreens } from "../config";
 import { HomeScreen } from "./HomeScreen";
+import { IPhoto } from "../../../entities/photo";
 
 export type HomeStackType = {
 	Home: undefined;
+	Details: { data: IPhoto };
 };
 
 const Stack = createStackNavigator<HomeStackType>();

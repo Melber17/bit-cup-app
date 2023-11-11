@@ -1,7 +1,6 @@
 import React from "react";
 import {
 	FlatList,
-	Image,
 	ListRenderItemInfo,
 	useWindowDimensions,
 } from "react-native";
@@ -12,11 +11,13 @@ import { Spacer } from "../../../shared/config";
 
 interface IPhotosListProps {
 	data: Nullable<IPhoto[]>;
-	headerComponent: () => JSX.Element;
+	headerComponent?: () => JSX.Element;
+	emptyListComponent: () => JSX.Element;
 }
 
 export const PhotosList: React.FC<IPhotosListProps> = ({
 	data,
+	emptyListComponent,
 	headerComponent,
 }) => {
 	const keyExtractor = (_: IPhoto, index: number) => index.toString();
@@ -38,6 +39,9 @@ export const PhotosList: React.FC<IPhotosListProps> = ({
 			renderItem={renderItem}
 			showsVerticalScrollIndicator={false}
 			numColumns={2}
+			ListFooterComponent={<></>}
+			ListEmptyComponent={emptyListComponent}
+			ListFooterComponentStyle={{ marginBottom: 150 }}
 			keyExtractor={keyExtractor}
 			ListHeaderComponent={headerComponent}
 			contentContainerStyle={{

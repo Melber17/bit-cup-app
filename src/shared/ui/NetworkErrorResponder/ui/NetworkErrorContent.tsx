@@ -41,14 +41,13 @@ const NetworkErrorContent: React.FC<INetworkErrorContentProps> = ({
 export default React.memo(NetworkErrorContent);
 
 const Container = styled.View`
-	flex: 1;
-	margin: ${Spacer.EXTRA_LARGE}px ${Spacer.MEDIUM}px;
+	margin: auto ${Spacer.MEDIUM}px;
 	justify-content: center;
+	padding-bottom: 70px;
 	align-items: center;
 `;
 
 const Content = styled(Animated.View)<{ height: number }>`
-	flex: 1;
 	height: ${({ height }) => height / 1.2}px;
 `;
 

@@ -13,3 +13,11 @@ export const getCuratedPhotos = async (page: number) => {
 
 	return response.data;
 };
+
+export const searchPhotos = async (page: number, query: string) => {
+	const response = await instance.get(
+		`search?page=${page}&per_page=30&query=${query}`,
+	);
+
+	return response.data;
+};
