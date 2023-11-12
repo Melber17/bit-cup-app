@@ -2,7 +2,7 @@
 
 ## **APK download below the link**
 
-## https://drive.google.com/file/d/1CCydJ1CPUFPJxUWMNAFczDKZ15qsGNv2/view?usp=sharing
+https://drive.google.com/file/d/1CCydJ1CPUFPJxUWMNAFczDKZ15qsGNv2/view?usp=sharing
 
 ## **Tech**
 
