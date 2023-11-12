@@ -4,23 +4,22 @@ import {
 	ListRenderItemInfo,
 	useWindowDimensions,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
 
 import { IPhoto } from "../../../entities/photo";
 import { PhotoItem } from "./PhotoItem";
 import { Spacer } from "../../../shared/config";
-import { HomeStackType } from "../../../screens/home";
-import { HomeScreens } from "../../../screens/home/config";
 
 interface IPhotosListProps {
 	data: Nullable<IPhoto[]>;
 	headerComponent?: () => JSX.Element;
 	emptyListComponent: () => JSX.Element;
+	withPhotographerInfo?: boolean;
 }
 
 export const PhotosList: React.FC<IPhotosListProps> = ({
 	data,
 	emptyListComponent,
+	withPhotographerInfo = false,
 	headerComponent,
 }) => {
 	const keyExtractor = (_: IPhoto, index: number) => index.toString();
@@ -32,6 +31,7 @@ export const PhotosList: React.FC<IPhotosListProps> = ({
 			<PhotoItem
 				width={photoWidth}
 				data={item}
+				withPhotographerInfo={withPhotographerInfo}
 			/>
 		);
 	};

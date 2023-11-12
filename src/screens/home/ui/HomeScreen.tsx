@@ -8,7 +8,6 @@ import {
 	useWindowDimensions,
 } from "react-native";
 import * as Progress from "react-native-progress";
-import { StackNavigationProp } from "@react-navigation/stack";
 
 import { WithSafeArea } from "../../../shared/ui/WithSafeArea";
 import {
@@ -16,28 +15,32 @@ import {
 	NetworkErrorResponder,
 	SearchBar,
 } from "../../../shared/ui";
-import { useLoadData } from "../../../shared/lib";
+import {
+	useAppDispatch,
+	useAppSelector,
+	useLoadData,
+} from "../../../shared/lib";
 import {
 	IPhoto,
 	IPhotoCategory,
 	getCuratedPhotos,
 	getPopularPhotosCategories,
 	searchPhotos,
+	setCategories,
+	setPhotos,
 } from "../../../entities/photo";
 import { RED_COLOR, Spacer, Themes } from "../../../shared/config";
 import { CategoriesList } from "../../../widgets/categories-list";
 import { PhotosList, EmptyPhotosList } from "../../../widgets/photos-list";
-import { HomeScreens } from "../config";
-import { HomeStackType } from "./HomeStack";
 
-interface IHomeScreenProps {
-	navigation: StackNavigationProp<HomeStackType, HomeScreens.HOME>;
-}
-
-export const HomeScreen: React.FC<IHomeScreenProps> = ({ navigation }) => {
+export const HomeScreen: React.FC = () => {
 	const isDarkTheme = useColorScheme() === Themes.DARK;
 	const [sectionsData, setSectionsData] =
 		useState<Nullable<IPhotoCategory[]>>(null);
+	const { photosData: cachedPhotos, categoriesData } = useAppSelector(
+		(store) => store.photos,
+	);
+	const dispatch = useAppDispatch();
 	const { width } = useWindowDimensions();
 	const [searchValue, setSearchValue] = useState("");
 	const [activeCategory, setActiveCategory] =
@@ -49,9 +52,16 @@ export const HomeScreen: React.FC<IHomeScreenProps> = ({ navigation }) => {
 	const inputRef = useRef<TextInput>(null);
 
 	const handleLoadSections = async () => {
-		const data = await getPopularPhotosCategories();
+		try {
+			const data = await getPopularPhotosCategories();
 
-		setSectionsData(data.collections);
+			setCategories(data.collections, dispatch);
+			setSectionsData(data.collections);
+		} catch (err) {
+			if (categoriesData) {
+				setSectionsData(categoriesData);
+			}
+		}
 	};
 
 	const handleSearchQueryChange = debounce((text: string) => {
@@ -82,6 +92,7 @@ export const HomeScreen: React.FC<IHomeScreenProps> = ({ navigation }) => {
 		try {
 			const data = await getCuratedPhotos(1);
 
+			setPhotos(data.photos, dispatch);
 			setPhotosData(data.photos);
 
 			if (isErrorLoadPhotos) {
@@ -134,6 +145,9 @@ export const HomeScreen: React.FC<IHomeScreenProps> = ({ navigation }) => {
 		} catch (err) {
 			setIsErrorLoadPhotos(true);
 
+			if (cachedPhotos) {
+				setPhotosData(cachedPhotos);
+			}
 			ToastAndroid.showWithGravity(
 				"An error occurred while loading",
 				ToastAndroid.SHORT,

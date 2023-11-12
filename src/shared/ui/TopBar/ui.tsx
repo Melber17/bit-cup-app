@@ -54,5 +54,6 @@ const IconWrapper = styled.TouchableOpacity`
 `;
 
 const Title = styled(Text)`
+	font-size: 18px;
 	color: ${(props) => props.theme.categoryColor};
 `;

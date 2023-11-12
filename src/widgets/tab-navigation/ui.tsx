@@ -14,6 +14,7 @@ import FocusedBookMarkIcon from "../../shared/assets/icons/focusedBookmarkIcon.s
 import { HomeStack } from "../../screens/home";
 import { BookmarksStack } from "../../screens/bookmarks";
 import { getThemeIcon } from "../../shared/lib";
+import { Container } from "../../shared/ui";
 
 export type TabStackType = {
 	HomeScreen: undefined;
@@ -27,60 +28,62 @@ export const TabNavigation = () => {
 	const insets = useSafeAreaInsets();
 
 	return (
-		<Tab.Navigator
-			screenOptions={({ route }) => ({
-				tabBarIcon: ({ focused }) => {
-					switch (route.name) {
-						case TabNavigationScreens.HOME:
-							return (
-								<>
-									{getThemeIcon(
-										phoneTheme,
-										focused,
-										<HomeIcon />,
-										<FocusedHomeIcon />,
-										<DarkFocusedHomeIcon />,
-									)}
-								</>
-							);
-						case TabNavigationScreens.BOOKMARKS:
-							return (
-								<>
-									{getThemeIcon(
-										phoneTheme,
-										focused,
-										<BookmarkIcon />,
-										<FocusedBookMarkIcon />,
-										<DarkFocusedBookmarkIcon />,
-									)}
-								</>
-							);
-					}
-				},
-				tabBarLabel: () => null,
-				tabBarStyle: {
-					justifyContent: "center",
-					paddingTop: Spacer.SMALL,
-					borderTopWidth: 0,
-					backgroundColor:
+		<Container>
+			<Tab.Navigator
+				screenOptions={({ route }) => ({
+					tabBarIcon: ({ focused }) => {
+						switch (route.name) {
+							case TabNavigationScreens.HOME:
+								return (
+									<>
+										{getThemeIcon(
+											phoneTheme,
+											focused,
+											<HomeIcon />,
+											<FocusedHomeIcon />,
+											<DarkFocusedHomeIcon />,
+										)}
+									</>
+								);
+							case TabNavigationScreens.BOOKMARKS:
+								return (
+									<>
+										{getThemeIcon(
+											phoneTheme,
+											focused,
+											<BookmarkIcon />,
+											<FocusedBookMarkIcon />,
+											<DarkFocusedBookmarkIcon />,
+										)}
+									</>
+								);
+						}
+					},
+					tabBarLabel: () => null,
+					tabBarStyle: {
+						justifyContent: "center",
+						paddingTop: Spacer.SMALL,
+						borderTopWidth: 0,
+						backgroundColor:
+							phoneTheme === Themes.DARK ? BLACK_COLOR : WHITE_COLOR,
+						height: insets.bottom + 64,
+					},
+					navigationBarColor:
 						phoneTheme === Themes.DARK ? BLACK_COLOR : WHITE_COLOR,
-					height: insets.bottom + 64,
-				},
-				// navigationBarColor:
-				// 	phoneTheme === Themes.DARK ? BLACK_COLOR : WHITE_COLOR,
-				tabBarLabelPosition: "below-icon",
-				headerShown: false,
-			})}
-			initialRouteName={TabNavigationScreens.HOME}
-		>
-			<Tab.Screen
-				name={TabNavigationScreens.HOME}
-				component={HomeStack}
-			/>
-			<Tab.Screen
-				name={TabNavigationScreens.BOOKMARKS}
-				component={BookmarksStack}
-			/>
-		</Tab.Navigator>
+					tabBarLabelPosition: "below-icon",
+					headerShown: false,
+				})}
+				initialRouteName={TabNavigationScreens.HOME}
+			>
+				<Tab.Screen
+					name={TabNavigationScreens.HOME}
+					component={HomeStack}
+				/>
+				<Tab.Screen
+					name={TabNavigationScreens.BOOKMARKS}
+					component={BookmarksStack}
+				/>
+			</Tab.Navigator>
+		</Container>
 	);
 };

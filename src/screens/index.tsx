@@ -1,17 +1,19 @@
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "react-native-splash-screen";
-import styled from "styled-components/native";
 import { useColorScheme } from "react-native";
 
 import { RootScreens } from "./config";
 import { TabNavigation } from "../widgets/tab-navigation";
 import { DetailsScreen } from "./details";
-import { IPhoto } from "../entities/photo";
+import { IPhoto, getCategories, getPopularPhotos } from "../entities/photo";
 import { BLACK_COLOR, Themes, WHITE_COLOR } from "../shared/config";
+import { Container } from "../shared/ui";
+import { useAppDispatch } from "../shared/lib";
+import { getBookmarksData } from "../entities/bookmarks";
 
 export type RootStackListType = {
-	TabNavigation: undefined;
+	TabNavigation: { screen: string };
 	Details: { data: IPhoto };
 };
 
@@ -19,9 +21,16 @@ const Stack = createNativeStackNavigator<RootStackListType>();
 
 export const Routing: React.FC = () => {
 	const isDarkMode = useColorScheme() === Themes.DARK;
+	const dispatch = useAppDispatch();
+	const launchApp = async () => {
+		await getBookmarksData(dispatch);
+		await getPopularPhotos(dispatch);
+		await getCategories(dispatch);
+		SplashScreen.hide();
+	};
 
 	useEffect(() => {
-		SplashScreen.hide();
+		launchApp();
 	}, []);
 
 	return (
@@ -45,8 +54,3 @@ export const Routing: React.FC = () => {
 		</Container>
 	);
 };
-
-const Container = styled.View`
-	flex: 1;
-	position: relative;
-`;

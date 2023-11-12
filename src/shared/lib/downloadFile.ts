@@ -1,4 +1,4 @@
-import { Alert, PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, ToastAndroid } from "react-native";
 import RNFetchBlob from "rn-fetch-blob";
 import DeviceInfo from "react-native-device-info";
 
@@ -15,9 +15,19 @@ export const checkDownloadFilePermission = async (fileUrl: string) => {
 		if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 			downloadFile(fileUrl);
 		} else {
-			Alert.alert("Error", "No permission to download");
+			ToastAndroid.showWithGravity(
+				"Error, no permission to download",
+				ToastAndroid.SHORT,
+				ToastAndroid.BOTTOM,
+			);
 		}
-	} catch (err) {}
+	} catch (err) {
+		ToastAndroid.showWithGravity(
+			"An error occurred while downloading",
+			ToastAndroid.SHORT,
+			ToastAndroid.BOTTOM,
+		);
+	}
 };
 
 export const downloadFile = (fileUrl: string) => {

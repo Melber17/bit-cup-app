@@ -6,14 +6,16 @@ import { FontStyles, RED_COLOR, Spacer } from "../../../shared/config";
 
 interface IEmptyPhotosListProps {
 	onPress: () => void;
+	title?: string;
 }
 
 export const EmptyPhotosList: React.FC<IEmptyPhotosListProps> = ({
 	onPress,
+	title = "No results found",
 }) => {
 	return (
 		<Container>
-			<NoDataText fontStyle={FontStyles.MEDIUM}>No results found</NoDataText>
+			<NoDataText fontStyle={FontStyles.MEDIUM}>{title}</NoDataText>
 			<Button onPress={onPress}>
 				<Title fontStyle={FontStyles.BOLD}>Explore</Title>
 			</Button>
@@ -23,13 +25,13 @@ export const EmptyPhotosList: React.FC<IEmptyPhotosListProps> = ({
 
 const Container = styled.View`
 	justify-content: center;
-	margin: auto;
+	flex: 1;
+	margin-top: 75%;
 	align-items: center;
-	margin-top: 220px;
 `;
 
 const Button = styled.TouchableOpacity`
-	margin-top: ${Spacer.LARGE}px;
+	margin-top: ${Spacer.SECONDARY}px;
 `;
 
 const NoDataText = styled(Text)`

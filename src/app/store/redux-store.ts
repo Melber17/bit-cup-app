@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { userSlice } from "../../entities/user";
+import { bookmarksSlice } from "../../entities/bookmarks";
+import { photosSlice } from "../../entities/photo";
 
 export const store = configureStore({
 	reducer: {
-		user: userSlice.reducer,
+		bookmarks: bookmarksSlice.reducer,
+		photos: photosSlice.reducer,
 	},
 });
 

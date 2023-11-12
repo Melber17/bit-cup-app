@@ -1,5 +1,9 @@
-import React from "react";
-import { useColorScheme, useWindowDimensions } from "react-native";
+import React, { useMemo } from "react";
+import {
+	ToastAndroid,
+	useColorScheme,
+	useWindowDimensions,
+} from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import styled from "styled-components/native";
 import { ImageZoom } from "@likashefqet/react-native-image-zoom";
@@ -13,7 +17,12 @@ import DarkFocusedBookmarkIcon from "../../shared/assets/icons/darkFocusedBookma
 import BookmarkIcon from "../../shared/assets/icons/BookmarkIconBlack.svg";
 import WhiteBookmarkIcon from "../../shared/assets/icons/WhiteBookmarkIcon.svg";
 import FocusedBookMarkIcon from "../../shared/assets/icons/focusedBookmarkIcon.svg";
-import { checkDownloadFilePermission } from "../../shared/lib";
+import {
+	checkDownloadFilePermission,
+	useAppDispatch,
+	useAppSelector,
+} from "../../shared/lib";
+import { removeBookmark, setBookmark } from "../../entities/bookmarks";
 
 interface IDetailsScreenProps {
 	route: RouteProp<RootStackListType, RootScreens.DETAILS>;
@@ -21,20 +30,25 @@ interface IDetailsScreenProps {
 
 export const DetailsScreen: React.FC<IDetailsScreenProps> = ({ route }) => {
 	const { data } = route.params;
+	const { bookmarksData } = useAppSelector((store) => store.bookmarks);
 	const phoneTheme = useColorScheme();
 	const { height } = useWindowDimensions();
-	const focused = true;
+	const dispatch = useAppDispatch();
+	const isActiveBookmark = useMemo(
+		() => bookmarksData?.find((item) => item.id === data.id),
+		[bookmarksData],
+	);
 
 	const getThemeIcon = () => {
 		if (phoneTheme === Themes.DARK) {
-			if (focused) {
+			if (isActiveBookmark) {
 				return <DarkFocusedBookmarkIcon />;
 			}
 
 			return <WhiteBookmarkIcon />;
 		}
 
-		if (focused) {
+		if (isActiveBookmark) {
 			return <FocusedBookMarkIcon />;
 		}
 
@@ -43,6 +57,16 @@ export const DetailsScreen: React.FC<IDetailsScreenProps> = ({ route }) => {
 
 	const handlePressDownload = () => {
 		checkDownloadFilePermission(data.src.original);
+	};
+
+	const handlePressBookmark = () => {
+		if (isActiveBookmark) {
+			removeBookmark(bookmarksData, data, dispatch);
+
+			return;
+		}
+
+		setBookmark(bookmarksData, data, dispatch);
 	};
 
 	return (
@@ -58,6 +82,13 @@ export const DetailsScreen: React.FC<IDetailsScreenProps> = ({ route }) => {
 							resizeMode="cover"
 							minScale={1}
 							maxScale={4}
+							onError={() => {
+								ToastAndroid.showWithGravity(
+									"An error occurred while loading",
+									ToastAndroid.SHORT,
+									ToastAndroid.BOTTOM,
+								);
+							}}
 							source={{ uri: data.src.original }}
 							style={{ height: height - 80, backgroundColor: data.avg_color }}
 						/>
@@ -68,7 +99,9 @@ export const DetailsScreen: React.FC<IDetailsScreenProps> = ({ route }) => {
 						<DownloadIcon />
 						<DownloadText>Download</DownloadText>
 					</DownloadWrapper>
-					<FavoriteWrapper>{getThemeIcon()}</FavoriteWrapper>
+					<FavoriteWrapper onPress={handlePressBookmark}>
+						{getThemeIcon()}
+					</FavoriteWrapper>
 				</BottomBar>
 			</Container>
 		</WithSafeArea>
@@ -103,7 +136,7 @@ const DownloadWrapper = styled.TouchableOpacity`
 	background: ${(props) => props.theme.categoryBackground};
 `;
 
-const FavoriteWrapper = styled.View`
+const FavoriteWrapper = styled.TouchableOpacity`
 	width: 48px;
 	height: 48px;
 	border-radius: 24px;
