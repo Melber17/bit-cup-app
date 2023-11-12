@@ -12,3 +12,12 @@ export type NavigationType = NativeStackNavigationProp<
 	RootStackListType,
 	RootScreens.TAB_NAVIGATION
 >;
+
+export const animationConfig = {
+	damping: 25,
+	mass: 1,
+	stiffness: 150,
+	overshootClamping: false,
+	restSpeedThreshold: 0.001,
+	restDisplacementThreshold: 0.001,
+};
